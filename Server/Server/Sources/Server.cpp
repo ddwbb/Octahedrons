@@ -168,9 +168,9 @@ void read_data(DATA * data) {
 		int received = 0;
 		int result = 0;
 		char * buffer = (char *)&data->info;
-		recv(data->read_socket, (char *)&data->info, sizeof(DATA_INFO), 0);
-		/*while (remaining > 0) {
-			if ((result = recv(data->read_socket, buffer + received, remaining, 0)) > 0) {
+		//recv(data->read_socket, (char *)&data->info, sizeof(DATA_INFO), 0);
+		while (remaining > 0) {
+			if ((result = recv(data->read_socket, (char *)&data->info + received, remaining, 0)) > 0) {
 				remaining -= result;
 				received += result;
 			}
@@ -178,7 +178,7 @@ void read_data(DATA * data) {
 				data->working = false;
 				return;
 			}
-		}*/
+		}
 
 
 		////bool triangle_rotating;
@@ -221,17 +221,17 @@ void send_info(DATA * target, DATA * data) {
 	int result = 0;
 	char * buffer = (char *)&data->info;
 
-	send(target->write_socket, (char *)&data->info, sizeof(DATA_INFO), 0);
+	//send(target->write_socket, (char *)&data->info, sizeof(DATA_INFO), 0);
 
-	/*while (remaining > 0) {
-		if ((result = send(target->write_socket, buffer + sent, remaining, 0)) > 0) {
+	while (remaining > 0) {
+		if ((result = send(target->write_socket, (char *)&data->info + sent, remaining, 0)) > 0) {
 			remaining -= result;
 			sent += result;
 		} else {
 			target->working = false;
 			break;
 		}
-	}*/
+	}
 	
 
 

@@ -1,4 +1,4 @@
-#include "Server.h"
+#include "../Headers/Server.h"
 
 int main(int argc, char * argv[]) {
 	Server server;

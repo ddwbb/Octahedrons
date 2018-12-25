@@ -1,4 +1,4 @@
-#include "Client.h"
+#include "../Headers/Client.h"
 
 Client::Client() {
 	srand(time(0));
@@ -91,10 +91,10 @@ void get_list(SOCKET sock, list<DATA *> * _list) {
 			result = 0;
 			DATA * data = new DATA;
 			//char * buffer = (char *)data;
-			recv(sock, (char *)data, sizeof(DATA), 0);
+			//recv(sock, (char *)data, sizeof(DATA), 0);
 
-			/*while (remaining > 0) {
-				if ((result = recv(sock, buffer + received, remaining, 0)) > 0) {
+			while (remaining > 0) {
+				if ((result = recv(sock, (char *)data + received, remaining, 0)) > 0) {
 					remaining -= result;
 					received += result;
 				} else if (result == SOCKET_ERROR) {
@@ -102,7 +102,7 @@ void get_list(SOCKET sock, list<DATA *> * _list) {
 					closesocket(sock);
 					return;
 				}
-			}*/
+			}
 			////bool triangle_rotating;
 			//read_from(sock, BOOL_SIZE, 0, &data->triangle_rotating, BOOL_TYPE);
 			////bool blending;
@@ -151,9 +151,9 @@ void send_data(SOCKET sock, DATA * data) {
 		data->position[1] = (float)(rand() % 1000 - 500) / 1000;
 		data->position[2] = (float)(rand() % 1000 - 500) / 1000;
 
-		send(sock, (char *)data, sizeof(DATA), 0);
-		/*while (remaining > 0) {
-			if ((result = send(sock, buffer + sent, remaining, 0)) > 0) {
+		//send(sock, (char *)data, sizeof(DATA), 0);
+		while (remaining > 0) {
+			if ((result = send(sock, (char *)data + sent, remaining, 0)) > 0) {
 				remaining -= result;
 				sent += result;
 			}
@@ -161,7 +161,7 @@ void send_data(SOCKET sock, DATA * data) {
 				closesocket(sock);
 				return;
 			}
-		}*/
+		}
 		//left_byte = sizeof(DATA_INFO);
 
 
