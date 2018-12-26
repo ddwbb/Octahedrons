@@ -5,33 +5,56 @@
 #include <iostream>
 #include <winsock.h>
 
+#include "config.h"
+#include "Octahedron.h"
+
 using namespace std;
 
-typedef struct {
-	bool triangle_rotating;
-	bool blending;
-	bool slicing;
+class Scene {
+	bool initialized;
+	bool lighting;
+	bool light_disabled;
+	bool full_screen;
 
-	int texturing;
+	int slice_count;
 	int texture_count;
 
-	float alpha;
-	float triangle_angle;
-	float triangle_speed;
-	float octahedron_angle_x;
-	float octahedron_angle_y;
-	float octahedron_speed;
-	float octahedron_aspect;
-	float position[3];
-}DATA;
+	GLfloat light_angle;
+	GLfloat light_speed;
+	GLfloat light_distance;
 
-class Scene {
+	DATA * data;
+
+	Octahedron * main;
+
 	list<DATA *> * data_list;
 
+	GLuint octahedron_list;
+	GLuint * texture_names;
+	AUX_RGBImageRec ** texture_images;
+
+	void init_view();
+	void init_light();
+	void init_texture();
+	void init_material();
+
+	static void callback_display();
+	static void callback_animation(int);
+
 public:
-	Scene(list<DATA *> *);
+	Scene();
+	Scene(list<DATA *> *, DATA *);
 	~Scene();
 
-	void view_list();
+	void init(int *, char **);
+	void display();
+	void animation(int);
+	void key_press(unsigned char, int, int);
+	void start();
+	void draw_sphere();
+
+	void init_sliced_octahedron();
+	void init_sliced_triangles(int);
 };
 
+static Scene * instance = nullptr;

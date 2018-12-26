@@ -157,7 +157,7 @@ void echo(DATA * data, list<DATA *> * _list, mutex * list_mutex) {
 			other = *it;
 			send_info(data, other);
 		}
-		Sleep(3000);
+		Sleep(25);
 	}
 }
 

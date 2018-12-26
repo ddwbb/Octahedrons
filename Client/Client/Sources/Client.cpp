@@ -1,27 +1,26 @@
 #include "../Headers/Client.h"
 
 Client::Client() {
+	client_instance = this;
 	srand(time(0));
 	randomaze();
 
-	data.texturing = 2;
-	data.texture_count = 12;
+	read_socket = 0;
+	write_socket = 0;
 
-	data.position[0] = (float)(rand() % 1000 - 500) / 1000;
-	data.position[1] = (float)(rand() % 1000 - 500) / 1000;
-	data.position[2] = (float)(rand() % 1000 - 500) / 1000;
+	data.octahedron_aspect = 1;
 
 	init();
 
-	scene = new Scene(&data_list);
-	//scene->view_list();
+	scene = new Scene(&data_list, &data);
 }
-
 
 Client::~Client(){
 
 }
 
+
+//----------------------INITIALIZE----------------------
 void Client::init() {
 	if (FAILED(WSAStartup(MAKEWORD(1, 1), &ws))) {
 		errno = WSAGetLastError();
@@ -31,8 +30,13 @@ void Client::init() {
 	socket_init(&read_socket);
 	socket_init(&write_socket);
 
-	receiver = new thread(get_list, read_socket, &data_list);
-	sender = new thread(send_data, write_socket, &data);
+	if (!read_socket || !write_socket) {
+		cout << "Can't connect to Server. Autoexit" << endl;
+		cout << "Start Single Pleer" << endl;
+	} else {
+		receiver = new thread(get_list, read_socket, &data_list);
+		sender = new thread(send_data, write_socket, &data);
+	}
 }
 
 void Client::socket_init(SOCKET * sock) {
@@ -64,6 +68,8 @@ void Client::socket_init(SOCKET * sock) {
 	}
 }
 
+
+//----------------------RECEIVE FUNCTION----------------------
 void get_list(SOCKET sock, list<DATA *> * _list) {
 	int count;
 	while (true) {
@@ -105,6 +111,8 @@ void get_list(SOCKET sock, list<DATA *> * _list) {
 	}
 }
 
+
+//----------------------SEND DATA----------------------
 void send_data(SOCKET sock, DATA * data) {
 	while (true) {
 		int remaining = sizeof(DATA);
@@ -120,10 +128,12 @@ void send_data(SOCKET sock, DATA * data) {
 				return;
 			}
 		}
-		Sleep(5000);
+		Sleep(24);
 	}
 }
 
+
+//----------------------VIEW FUNCTION----------------------
 void Client::view_list() {
 	Client::view_list(data_list);
 }
@@ -155,9 +165,26 @@ void Client::view_list(list<DATA *> data_list) {
 	cout << "END OF SCANING" << endl << endl;
 }
 
+
+//----------------------
 void Client::randomaze() {
 	for (int i = 0; i < 4; i++) {
 		name[i] = rand() % 26 + 97;
 	}
 	name[4] = '\0';
+}
+
+void Client::start(int * argc, char ** argv) {
+	scene->init(argc, argv);
+	glutKeyboardFunc(callback_key_press);
+	scene->start();
+}
+
+void Client::callback_key_press(unsigned char key, int x, int y) {
+	client_instance->key_press(key, x, y);
+}
+
+void Client::key_press(unsigned char key, int x, int y) {
+	//send_data(write_socket, &data);
+	scene->key_press(key, x, y);
 }

@@ -16,31 +16,6 @@
 
 using namespace std;
 
-enum VAR_TYPE {
-	INT_TYPE = 0,
-	BOOL_TYPE,
-	CHAR_TYPE,
-	FLOAT_TYPE
-};
-
-//typedef struct DATA{
-//	bool triangle_rotating;
-//	bool blending;
-//	bool slicing;
-//
-//	int texturing;
-//	int texture_count;
-//
-//	float alpha;
-//	float triangle_angle;
-//	float triangle_speed;
-//	float octahedron_angle_x;
-//	float octahedron_angle_y;
-//	float octahedron_speed;
-//	float octahedron_aspect;
-//	float position[3];
-//};
-
 class Client {
 
 	WSADATA ws;
@@ -61,6 +36,7 @@ class Client {
 
 	void randomaze();
 	void socket_init(SOCKET *);
+	void key_press(unsigned char, int, int);
 public:
 	Client();
 	~Client();
@@ -68,9 +44,12 @@ public:
 	void init();
 	void view_list();
 	static void view_list(list<DATA *>);
+	static void callback_key_press(unsigned char, int, int);
+
+	void start(int *, char **);
 };
 
-void send_to(SOCKET, int, int, void *, int);
-void read_from(SOCKET, int, int, void *, int);
+static Client * client_instance = nullptr;
+
 void send_data(SOCKET, DATA *);
 void get_list(SOCKET, list<DATA *> *);
